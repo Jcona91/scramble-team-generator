@@ -2,17 +2,16 @@ import streamlit as st
 
 st.set_page_config(page_title="Scramble Team Generator", layout="centered")
 
-st.markdown("<h1 style='text-align: center;'>🏌️ Scramble Team Generator</h1>", unsafe_allow_html=True)
+st.title("🏌️ Scramble Team Generator")
 
-team_size = st.selectbox("Select Scramble Format", [2, 3], index=0)
+team_size = st.sidebar.selectbox("Select Scramble Format", [2, 3])
 
-st.markdown("### Enter Player Names and Handicaps")
-st.markdown("Use the format: `Name, Handicap` (one per line)")
-
-player_input = st.text_area("Player List", height=200, placeholder="e.g.
-Alice, 5
-Bob, 12
-Charlie, 20")
+st.subheader("Enter Player Names and Handicaps")
+player_input = st.text_area(
+    "Player List",
+    height=200,
+    placeholder="e.g.\nAlice, 5\nBob, 12\nCharlie, 20"
+)
 
 players = []
 if player_input:
@@ -54,7 +53,7 @@ if st.button("Generate Teams"):
         st.error(f"At least {team_size} players are required.")
     else:
         teams = generate_balanced_teams(players, team_size)
-        st.markdown("### 🏆 Generated Teams")
+        st.subheader("🏆 Generated Teams")
         for i, team in enumerate(teams, 1):
             team_str = ", ".join([f"{p[0]} (HCP {p[1]})" for p in team])
-            st.markdown(f"**Team {i}:** {team_str}")
+           
