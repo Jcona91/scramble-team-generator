@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 
 st.title("Balanced Scramble Team Generator")
 
@@ -18,10 +19,9 @@ if player_data:
                 st.warning(f"Invalid handicap for player: {line}")
 
 def generate_balanced_teams(players, team_size):
+    random.shuffle(players)
     players_sorted = sorted(players, key=lambda x: -x[1])
     num_teams = len(players) // team_size
-    if num_teams == 0:
-        return []
 
     teams = [[] for _ in range(num_teams)]
     team_totals = [0] * num_teams
@@ -36,19 +36,22 @@ def generate_balanced_teams(players, team_size):
         if min_index is not None:
             teams[min_index].append(player)
             team_totals[min_index] += player[1]
-        else:
-            teams.append([player])
-            team_totals.append(player[1])
 
-    return teams
+    # Handle leftover players
+    leftover_players = [p for p in players if p not in [player for team in teams for player in team]]
+
+    return teams, leftover_players
 
 if st.button("Generate Teams"):
     if len(players) < team_size:
         st.error(f"At least {team_size} players are required.")
     else:
-        teams = generate_balanced_teams(players, team_size)
+        teams, leftovers = generate_balanced_teams(players, team_size)
         st.subheader("Generated Teams")
         for i, team in enumerate(teams, 1):
             team_str = ", ".join([f"{p[0]} (HCP {p[1]})" for p in team])
-            st.write(f"**Team {i}:** {team_str}")
+            team_total = sum(p[1] for p in team)
+            st.write(f"**Team {i} (Total HCP: {team_total}):** {team_str}")
+
+       
 
