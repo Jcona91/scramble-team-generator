@@ -32,3 +32,29 @@ def generate_balanced_teams(players, team_size):
 
     teams = [[] for _ in range(num_teams)]
     team_totals = [0] * num_teams
+
+    for player in players_sorted:
+        min_index = None
+        min_total = float('inf')
+        for i in range(num_teams):
+            if len(teams[i]) < team_size and team_totals[i] < min_total:
+                min_total = team_totals[i]
+                min_index = i
+        if min_index is not None:
+            teams[min_index].append(player)
+            team_totals[min_index] += player[1]
+        else:
+            teams.append([player])
+            team_totals.append(player[1])
+
+    return teams
+
+if st.button("Generate Teams"):
+    if len(players) < team_size:
+        st.error(f"At least {team_size} players are required.")
+    else:
+        teams = generate_balanced_teams(players, team_size)
+        st.markdown("### 🏆 Generated Teams")
+        for i, team in enumerate(teams, 1):
+            team_str = ", ".join([f"{p[0]} (HCP {p[1]})" for p in team])
+            st.markdown(f"**Team {i}:** {team_str}")
