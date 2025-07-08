@@ -1,4 +1,12 @@
 import streamlit as st
+from PIL import Image
+
+st.set_page_config(page_title="Pitch & Putt Scramble Generator", page_icon="⛳")
+
+# Display logo
+logo = Image.open("pitch_putt_logo.png")
+st.image(logo, width=200)
+import streamlit as st
 import random
 
 st.title("Balanced Scramble Team Generator")
