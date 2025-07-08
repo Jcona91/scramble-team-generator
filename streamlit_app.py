@@ -9,7 +9,7 @@ team_size = st.sidebar.selectbox("Select Scramble Format", [2, 3])
 handicap_options = list(range(0, 26))
 
 # Input player names
-st.subheader("Enter Player Names")
+st.subheader("Enter Player Names and Select Handicaps")
 num_players = st.number_input("How many players?", min_value=1, max_value=100, step=1)
 
 players = []
@@ -61,6 +61,7 @@ if st.button("Generate Teams"):
             st.subheader("Leftover Players")
             for p in leftovers:
                 st.write(f"{p[0]} (HCP {p[1]})")
+
 
 
        
