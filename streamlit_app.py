@@ -5,18 +5,22 @@ st.title("Balanced Scramble Team Generator")
 
 team_size = st.sidebar.selectbox("Select Scramble Format", [2, 3])
 
-st.subheader("Enter Player Names and Handicaps")
-player_data = st.text_area("Format: Name, Handicap (one per line)", height=200)
+# Handicap options
+handicap_options = list(range(0, 26))
+
+# Input player names
+st.subheader("Enter Player Names")
+num_players = st.number_input("How many players?", min_value=1, max_value=100, step=1)
 
 players = []
-if player_data:
-    for line in player_data.strip().split("\n"):
-        if "," in line:
-            name, hcp = line.split(",", 1)
-            try:
-                players.append((name.strip(), float(hcp.strip())))
-            except ValueError:
-                st.warning(f"Invalid handicap for player: {line}")
+for i in range(int(num_players)):
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        name = st.text_input(f"Player {i+1} Name", key=f"name_{i}")
+    with col2:
+        hcp = st.selectbox(f"HCP", handicap_options, key=f"hcp_{i}")
+    if name:
+        players.append((name.strip(), float(hcp)))
 
 def generate_balanced_teams(players, team_size):
     random.shuffle(players)
@@ -37,9 +41,7 @@ def generate_balanced_teams(players, team_size):
             teams[min_index].append(player)
             team_totals[min_index] += player[1]
 
-    # Handle leftover players
     leftover_players = [p for p in players if p not in [player for team in teams for player in team]]
-
     return teams, leftover_players
 
 if st.button("Generate Teams"):
@@ -51,7 +53,15 @@ if st.button("Generate Teams"):
         for i, team in enumerate(teams, 1):
             team_str = ", ".join([f"{p[0]} (HCP {p[1]})" for p in team])
             team_total = sum(p[1] for p in team)
-            st.write(f"**Team {i} (Total HCP: {team_total}):** {team_str}")
+            team_allowance = round(team_total / 3, 1)
+            st.write(f"**Team {i}** — Total HCP: {team_total}, Allowance: **{team_allowance}**")
+            st.write(team_str)
+
+        if leftovers:
+            st.subheader("Leftover Players")
+            for p in leftovers:
+                st.write(f"{p[0]} (HCP {p[1]})")
+
 
        
 
